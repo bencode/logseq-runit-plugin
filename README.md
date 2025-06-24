@@ -25,10 +25,6 @@ Built for [Logseq](https://logseq.com/).
 - Use `pnpm dev` to start development with hot reload.
 - Build for production with `pnpm build`.
 
-## License
-
-MIT
-
 ## Acknowledgments
 
 Special thanks to [Klipse](https://github.com/viebel/klipse) for inspiration.  
@@ -38,3 +34,11 @@ I appreciate the work of the Klipse authors, and plan to add support for more la
 - [ClojureScript](https://clojurescript.org/)
 - [Google Charts](https://developers.google.com/chart)
 - [JSX](https://react.dev/learn/writing-markup-with-jsx)
+
+**Note:**  
+Currently, code execution happens when the code editor loses focus, which is less interactive compared to Klipse.  
+I plan to improve this in the future—ideally, running code with just <kbd>Ctrl+Enter</kbd>.
+
+## License
+
+MIT
