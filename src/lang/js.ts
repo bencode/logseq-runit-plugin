@@ -1,4 +1,4 @@
-import type { EvaluatorFn } from '../types'
+import type { EvaluateFn } from '../types'
 
 export function compile(code: string) {
   // 支持指令: // %import <url> as <name>
@@ -15,7 +15,20 @@ export function compile(code: string) {
     }
     return context
   }
-  const evaluate = compileEvaludate(codeBody) as EvaluatorFn
+
+  const fn = compileEvaludate(codeBody)
+  const evaluate: EvaluateFn = async (context, helper) => {
+    const g = globalThis
+    const error = g.console.error.bind(g.console)
+    const warn = g.console.warn.bind(g.console)
+    const debug = g.console.debug.bind(g.console)
+    const console = { debug, warn, error, log: helper.log }
+    const ctx = {
+      ...context,
+      console,
+    }
+    return fn(ctx)
+  }
   return { setup, evaluate }
 }
 

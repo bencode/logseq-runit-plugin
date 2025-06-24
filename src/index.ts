@@ -1,6 +1,6 @@
 import '@logseq/libs'
 import { format as prettyFormat } from 'pretty-format'
-import type { Args, EvaluatorFn, RunResponse, Compiler } from './types'
+import type { Args, EvaluateFn, RunResponse, Compiler } from './types'
 import { escapeHtml } from './helper'
 import { compile as compileJs } from './lang/js'
 import { compile as compilePython } from './lang/python'
@@ -65,23 +65,15 @@ async function runCode(code: string, lang: string) {
   }
 }
 
-async function runFn(fn: EvaluatorFn, context: Record<string, unknown> | undefined) {
+async function runFn(fn: EvaluateFn, context: Record<string, unknown> | undefined) {
   const outputs: Args[] = []
   const log = (...args: unknown[]) => {
-    globalThis.console.log(...args)
     outputs.push(args)
   }
-  const g = globalThis
-  const error = g.console.error.bind(g.console)
-  const warn = g.console.warn.bind(g.console)
-  const debug = g.console.debug.bind(g.console)
-  const ctx = {
-    ...context,
-    console: { debug, error, warn, log },
-  }
 
+  const ctx = { ...context }
   try {
-    const result = await fn(ctx)
+    const result = await fn(ctx, { log })
     return { outputs, result }
   } catch (error) {
     return { outputs, error: error as Error }
