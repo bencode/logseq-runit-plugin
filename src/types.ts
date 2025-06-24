@@ -1,3 +1,4 @@
+export type Dict = Record<string, unknown>
 export type Args = unknown[]
 
 export type RunResponse = Partial<{
@@ -6,4 +7,9 @@ export type RunResponse = Partial<{
   error: Error
 }>
 
-export type EvaluatorFn = (context: Record<string, unknown>) => unknown
+export type EvaluatorFn = (context: Dict) => unknown
+
+export type Compiler = (code: string) => {
+  setup: () => Promise<Dict | undefined>
+  evaluate: EvaluatorFn
+}

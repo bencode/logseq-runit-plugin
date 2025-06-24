@@ -15,8 +15,8 @@ export function compile(code: string) {
     }
     return context
   }
-  const evaludate = compileEvaludate(codeBody) as EvaluatorFn
-  return { setup, evaludate }
+  const evaluate = compileEvaludate(codeBody) as EvaluatorFn
+  return { setup, evaluate }
 }
 
 export function compileEvaludate(code: string) {

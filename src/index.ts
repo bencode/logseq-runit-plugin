@@ -1,19 +1,18 @@
 import '@logseq/libs'
 import { format as prettyFormat } from 'pretty-format'
-import type { Args, EvaluatorFn, RunResponse } from './types'
+import type { Args, EvaluatorFn, RunResponse, Compiler } from './types'
 import { escapeHtml } from './helper'
 import { compile as compileJs } from './lang/js'
+import { compile as compilePython } from './lang/python'
 
-const FENCE = '```'
+const Compilers = {
+  js: compileJs,
+  python: compilePython,
+} as Record<string, Compiler>
 
 const main = async () => {
-  // const host = logseq.Experiments.ensureHostScope()
-
   logseq.Editor.registerSlashCommand('Create Runit Snippet', async (e) => {
     const snippet = `
-${FENCE}js
-console.log('hello')
-${FENCE}
 {{renderer :runit_${e.uuid}}}
 `.trim()
     await logseq.Editor.insertAtEditingCursor(snippet)
@@ -36,6 +35,7 @@ ${FENCE}
 
     const lang = match[1] || 'js'
     const code = match[2].trim()
+    window.console.log('runit', { lang, code })
 
     const res = await runCode(code, lang)
     const html = buildResponseHtml(res, slot, uuid)
@@ -52,23 +52,20 @@ ${FENCE}
 logseq.ready(main).catch(console.error)
 
 async function runCode(code: string, lang: string) {
-  if (lang === 'js') {
-    return runJsCode(code)
+  const compile = Compilers[lang]
+  if (!compile) {
+    throw new Error(`Unsupported language: ${lang}`)
   }
-  return { result: `Unsupported language: ${lang}` }
-}
-
-async function runJsCode(code: string): Promise<RunResponse> {
   try {
-    const { setup, evaludate } = compileJs(code || 'undefined')
+    const { setup, evaluate } = compile(code)
     const context = await setup()
-    return runFn(evaludate, context)
+    return runFn(evaluate, context)
   } catch (error) {
     return { error: error as Error }
   }
 }
 
-function runFn(fn: EvaluatorFn, context: Record<string, unknown>) {
+async function runFn(fn: EvaluatorFn, context: Record<string, unknown> | undefined) {
   const outputs: Args[] = []
   const log = (...args: unknown[]) => {
     globalThis.console.log(...args)
@@ -84,7 +81,7 @@ function runFn(fn: EvaluatorFn, context: Record<string, unknown>) {
   }
 
   try {
-    const result = fn(ctx)
+    const result = await fn(ctx)
     return { outputs, result }
   } catch (error) {
     return { outputs, error: error as Error }
