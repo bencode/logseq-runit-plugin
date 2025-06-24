@@ -1,7 +1,8 @@
 # logseq-runit-plugin
 
 A Logseq plugin for running code snippets directly inside your notes.  
-Supports JavaScript, Python (via Pyodide), and Scheme (via BiwaScheme) with interactive output.
+Supports JavaScript, Python (via [Pyodide](https://pyodide.org/)), and Scheme (via [BiwaScheme](https://www.biwascheme.org/)) with interactive output.  
+Built for [Logseq](https://logseq.com/).
 
 ## Features
 
@@ -34,6 +35,6 @@ Special thanks to [Klipse](https://github.com/viebel/klipse) for inspiration.
 Originally, I wanted to integrate Klipse directly, but due to some technical limitations, I implemented a simplified "code runner" based on some of Klipse's ideas.  
 I appreciate the work of the Klipse authors, and plan to add support for more languages I enjoy in the future, such as:
 
-- ClojureScript
-- Google Charts
-- JSX
+- [ClojureScript](https://clojurescript.org/)
+- [Google Charts](https://developers.google.com/chart)
+- [JSX](https://react.dev/learn/writing-markup-with-jsx)
