@@ -1,5 +1,5 @@
-import { format as prettyFormat } from 'pretty-format'
 import '@logseq/libs'
+import { format as prettyFormat } from 'pretty-format'
 import type { Args, EvaluatorFn, RunResponse } from './types'
 import { escapeHtml } from './helper'
 import { compile as compileJs } from './lang/js'
@@ -61,13 +61,14 @@ async function runCode(code: string, lang: string) {
 async function runJsCode(code: string): Promise<RunResponse> {
   try {
     const { setup, evaludate } = compileJs(code || 'undefined')
-    return runFn(evaludate)
+    const context = await setup()
+    return runFn(evaludate, context)
   } catch (error) {
     return { error: error as Error }
   }
 }
 
-function runFn(fn: EvaluatorFn) {
+function runFn(fn: EvaluatorFn, context: Record<string, unknown>) {
   const outputs: Args[] = []
   const log = (...args: unknown[]) => {
     globalThis.console.log(...args)
@@ -77,12 +78,13 @@ function runFn(fn: EvaluatorFn) {
   const error = g.console.error.bind(g.console)
   const warn = g.console.warn.bind(g.console)
   const debug = g.console.debug.bind(g.console)
-  const context = {
+  const ctx = {
+    ...context,
     console: { debug, error, warn, log },
   }
 
   try {
-    const result = fn(context)
+    const result = fn(ctx)
     return { outputs, result }
   } catch (error) {
     return { outputs, error: error as Error }

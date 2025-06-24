@@ -1,8 +1,21 @@
 import type { EvaluatorFn } from '../types'
 
 export function compile(code: string) {
-  const setup = async () => {}
-  const evaludate = compileEvaludate(code) as EvaluatorFn
+  // 支持指令: // %import <url> as <name>
+  const importRegex = /^\/\/\s*%import\s+(\S+)\s+as\s+(\w+)/gm
+  const importLines = Array.from(code.matchAll(importRegex))
+  const codeBody = code.replace(importRegex, '').trim()
+
+  const setup = async () => {
+    const context: Record<string, unknown> = {}
+    for (const match of importLines) {
+      const [, url, name] = match
+      const mod = await import(/* load */ url)
+      context[name] = mod
+    }
+    return context
+  }
+  const evaludate = compileEvaludate(codeBody) as EvaluatorFn
   return { setup, evaludate }
 }
 
