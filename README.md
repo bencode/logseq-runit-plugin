@@ -21,6 +21,28 @@ Built for [Logseq](https://logseq.com/).
 3. Write your code in JavaScript, Python, or Scheme inside the block.
 4. The output and console logs will be displayed below the code.
 
+### Importing External JavaScript Modules
+
+You can import external JavaScript modules using a special magic comment at the top of your code block:
+
+```js
+// %import https://esm.sh/ramda as R
+
+R.map(v => v + 1)([1, 2, 3, 4])
+
+// output
+Array [
+  2,
+  3,
+  4,
+  5,
+]
+```
+
+Just replace the URL and alias (`R` in this example) as needed.  
+This allows you to use libraries from CDNs like [esm.sh](https://esm.sh/) directly in your code snippets.
+
+
 ## Development
 
 - Clone the repo and run `pnpm install`.
