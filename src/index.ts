@@ -4,10 +4,12 @@ import type { Args, EvaluateFn, RunResponse, Compiler } from './types'
 import { escapeHtml } from './helper'
 import { compile as compileJs } from './lang/js'
 import { compile as compilePython } from './lang/python'
+import { compile as compileScheme } from './lang/scheme'
 
 const Compilers = {
   js: compileJs,
   python: compilePython,
+  scheme: compileScheme,
 } as Record<string, Compiler>
 
 const main = async () => {
@@ -22,6 +24,7 @@ const main = async () => {
     if (args[0]?.indexOf(':runit_') !== 0) {
       return
     }
+
     const block = await logseq.Editor.getBlock(uuid)
     if (!block) {
       return
