@@ -1,9 +1,10 @@
+import { format as prettyFormat } from 'pretty-format'
 import '@logseq/libs'
 
 const FENCE = '```'
 
 const main = async () => {
-  const host = logseq.Experiments.ensureHostScope()
+  // const host = logseq.Experiments.ensureHostScope()
 
   logseq.Editor.registerSlashCommand('Create Runit Snippet', async (e) => {
     const snippet = `
@@ -30,8 +31,8 @@ ${FENCE}
       return
     }
 
-    const lang = match[1] ?? 'js'
-    const code = match[2]
+    const lang = match[1] || 'js'
+    const code = match[2].trim()
 
     const res = await runCode(code, lang)
     const html = buildResponseHtml(res, slot, uuid)
@@ -64,21 +65,40 @@ type RunResponse = Partial<{
 async function runJsCode(code: string): Promise<RunResponse> {
   let fn: Function
   try {
-    fn = compileJs(code)
+    fn = compileJs(code || 'undefined')
   } catch (error) {
     return { error: error as Error }
   }
   return runFn(fn)
 }
 
-function compileJs(code) {
-  const body = `
-    with ($context) {
-      return (${code});
-    }
-  `
-  const fn = new Function('$context', body)
-  return fn
+function compileJs(code: string) {
+  const lines = code.split('\n').filter((line) => line.trim().length > 0)
+  if (lines.length === 0) {
+    return new Function('$context', 'with ($context) { return undefined; }')
+  }
+
+  if (lines.length === 1) {
+    const body = `
+      with ($context) {
+        return (${lines[0]});
+      }
+    `
+    return new Function('$context', body)
+  }
+
+  const lastLine = lines[lines.length - 1]
+  if (isLikelyExpression(lastLine)) {
+    const body = 'with ($context) {\n' + lines.slice(0, -1).join('\n') + '\nreturn (' + lastLine + ');\n}'
+    return new Function('$context', body)
+  } else {
+    const body = 'with ($context) {\n' + lines.join('\n') + '\n}'
+    return new Function('$context', body)
+  }
+}
+
+function isLikelyExpression(line: string) {
+  return !/^\s*(let|const|var|function|return|if|for|while|class|switch|try|catch|do|import|export)\b/.test(line)
 }
 
 function runFn(fn: Function) {
@@ -106,24 +126,35 @@ function runFn(fn: Function) {
 
 function buildResponseHtml(res: RunResponse, _slot: string, _uuid: string): string {
   let html = '<div class="runit-output">'
+  if (res.error) {
+    html += `<div style="color:red;"><strong>Error:</strong> ${escapeHtml(res.error.message)}<br/><pre>${escapeHtml(res.error.stack || '')}</pre></div>`
+  }
 
   if (res.outputs && res.outputs.length > 0) {
     html += '<div><strong>Console Output:</strong><ul>'
     for (const args of res.outputs) {
-      const line = args.map((arg) => (typeof arg === 'string' ? arg : JSON.stringify(arg))).join(' ')
+      const line = args.map((arg) => escapeHtml(typeof arg === 'string' ? arg : prettyFormat(arg))).join(' ')
       html += `<li>${line}</li>`
     }
     html += '</ul></div>'
   }
 
-  if (res.result !== undefined) {
-    html += `<div><strong>Result:</strong> <pre>${JSON.stringify(res.result, null, 2)}</pre></div>`
-  }
-
-  if (res.error) {
-    html += `<div style="color:red;"><strong>Error:</strong> ${res.error.message}<br/><pre>${res.error.stack || ''}</pre></div>`
-  }
+  html += `<div><pre>${escapeHtml(prettyFormat(res.result))}</pre></div>`
 
   html += '</div>'
   return html
+}
+
+function escapeHtml(str: string) {
+  return String(str).replace(
+    /[&<>"']/g,
+    (s) =>
+      ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;',
+      })[s]!,
+  )
 }

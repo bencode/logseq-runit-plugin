@@ -8,7 +8,8 @@
   },
   "dependencies": {
     "@logseq/libs": "^0.0.17",
-    "parcel": "^2.15.2"
+    "parcel": "^2.15.2",
+    "pretty-format": "^30.0.2"
   },
   "keywords": [],
   "author": "Qijun",
