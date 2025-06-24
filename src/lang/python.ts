@@ -24,7 +24,8 @@ export function compile(code: string) {
     const pyodide = ref.current!
     const originLog = globalThis.console.log
     globalThis.console.log = helper.log
-    await pyodide.runPython(code)
+    const rewritten = rewritePythonCode(pyodide, code)
+    await pyodide.runPython(rewritten)
     globalThis.console.log = originLog
 
     const result = pyodide.globals.get('__result__')
@@ -32,4 +33,25 @@ export function compile(code: string) {
   }
 
   return { setup, evaluate }
+}
+
+function rewritePythonCode(pyodide: PyodideHandler, code: string): string {
+  const lines = code.trimEnd().split('\n')
+  if (lines.length === 0) {
+    return code
+  }
+
+  const lastLine = lines[lines.length - 1]
+  let isExpr = false
+  try {
+    pyodide.runPython(`compile(${JSON.stringify(lastLine)}, '<input>', 'eval')`)
+    isExpr = true
+  } catch {
+    isExpr = false
+  }
+  if (isExpr) {
+    lines[lines.length - 1] = `__result__ = (${lastLine})`
+    return lines.join('\n')
+  }
+  return code
 }
