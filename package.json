@@ -1,7 +1,7 @@
 {
   "name": "logseq-runit-plugin",
   "version": "0.1.0",
-  "description": "",
+  "description": "A Logseq plugin for running JavaScript, Python, and Scheme code snippets directly inside your notes, with interactive output and console capture.",
   "scripts": {
     "dev": "parcel watch --public-url . --no-source-maps index.html",
     "build": "parcel build --public-url . --no-source-maps index.html",
