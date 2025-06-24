@@ -1,5 +1,8 @@
 import { format as prettyFormat } from 'pretty-format'
 import '@logseq/libs'
+import { Args, RunResponse } from './types'
+import { escapeHtml } from './helper'
+import { compile as compileJs } from './lang/js'
 
 const FENCE = '```'
 
@@ -55,13 +58,6 @@ async function runCode(code: string, lang: string) {
   return { result: `Unsupported language: ${lang}` }
 }
 
-type Args = unknown[]
-type RunResponse = Partial<{
-  outputs: Args[]
-  result: unknown
-  error: Error
-}>
-
 async function runJsCode(code: string): Promise<RunResponse> {
   let fn: Function
   try {
@@ -72,38 +68,8 @@ async function runJsCode(code: string): Promise<RunResponse> {
   return runFn(fn)
 }
 
-function compileJs(code: string) {
-  const lines = code.split('\n').filter((line) => line.trim().length > 0)
-  if (lines.length === 0) {
-    return new Function('$context', 'with ($context) { return undefined; }')
-  }
-
-  if (lines.length === 1) {
-    const body = `
-      with ($context) {
-        return (${lines[0]});
-      }
-    `
-    return new Function('$context', body)
-  }
-
-  const lastLine = lines[lines.length - 1]
-  if (isLikelyExpression(lastLine)) {
-    const body = 'with ($context) {\n' + lines.slice(0, -1).join('\n') + '\nreturn (' + lastLine + ');\n}'
-    return new Function('$context', body)
-  } else {
-    const body = 'with ($context) {\n' + lines.join('\n') + '\n}'
-    return new Function('$context', body)
-  }
-}
-
-function isLikelyExpression(line: string) {
-  return !/^\s*(let|const|var|function|return|if|for|while|class|switch|try|catch|do|import|export)\b/.test(line)
-}
-
 function runFn(fn: Function) {
   const outputs: Args[] = []
-
   const log = (...args: unknown[]) => {
     globalThis.console.log(...args)
     outputs.push(args)
@@ -143,18 +109,4 @@ function buildResponseHtml(res: RunResponse, _slot: string, _uuid: string): stri
 
   html += '</div>'
   return html
-}
-
-function escapeHtml(str: string) {
-  return String(str).replace(
-    /[&<>"']/g,
-    (s) =>
-      ({
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#39;',
-      })[s]!,
-  )
 }

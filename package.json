@@ -4,7 +4,8 @@
   "description": "",
   "scripts": {
     "dev": "parcel watch --public-url . --no-source-maps index.html",
-    "build": "parcel build --public-url . --no-source-maps index.html"
+    "build": "parcel build --public-url . --no-source-maps index.html",
+    "lint": "eslint src --quiet"
   },
   "dependencies": {
     "@logseq/libs": "^0.0.17",
@@ -19,5 +20,13 @@
     "title": "logseq-runit-plugin",
     "icon": "./logo.png",
     "main": "dist/index.html"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.29.0",
+    "@typescript-eslint/eslint-plugin": "^8.35.0",
+    "@typescript-eslint/parser": "^8.35.0",
+    "eslint": "^9.29.0",
+    "globals": "^16.2.0",
+    "typescript-eslint": "^8.35.0"
   }
 }
