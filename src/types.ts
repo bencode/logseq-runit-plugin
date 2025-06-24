@@ -5,3 +5,5 @@ export type RunResponse = Partial<{
   result: unknown
   error: Error
 }>
+
+export type EvaluatorFn = (context: Record<string, unknown>) => unknown

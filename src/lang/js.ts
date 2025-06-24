@@ -1,4 +1,12 @@
+import type { EvaluatorFn } from '../types'
+
 export function compile(code: string) {
+  const setup = async () => {}
+  const evaludate = compileEvaludate(code) as EvaluatorFn
+  return { setup, evaludate }
+}
+
+export function compileEvaludate(code: string) {
   const lines = code.split('\n').filter((line) => line.trim().length > 0)
   if (lines.length === 0) {
     return new Function('$context', 'with ($context) { return undefined; }')
