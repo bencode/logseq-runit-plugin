@@ -53,11 +53,6 @@ This allows you to use libraries from CDNs like [esm.sh](https://esm.sh/) direct
 
 Special thanks to [Klipse](https://github.com/viebel/klipse) for inspiration.  
 Originally, I wanted to integrate Klipse directly, but due to some technical limitations, I implemented a simplified "code runner" based on some of Klipse's ideas.  
-I appreciate the work of the Klipse authors, and plan to add support for more languages I enjoy in the future, such as:
-
-- [ClojureScript](https://clojurescript.org/)
-- [Google Charts](https://developers.google.com/chart)
-- [JSX](https://react.dev/learn/writing-markup-with-jsx)
 
 **Note:**  
 Currently, code execution happens when the code editor loses focus, which is less interactive compared to Klipse.  
