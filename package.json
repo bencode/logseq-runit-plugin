@@ -1,0 +1,22 @@
+{
+  "name": "logseq-runit-plugin",
+  "version": "0.1.0",
+  "description": "",
+  "scripts": {
+    "dev": "parcel watch --public-url . --no-source-maps index.html",
+    "build": "parcel build --public-url . --no-source-maps index.html"
+  },
+  "dependencies": {
+    "@logseq/libs": "^0.0.17",
+    "parcel": "^2.15.2"
+  },
+  "keywords": [],
+  "author": "Qijun",
+  "license": "MIT",
+  "logseq": {
+    "id": "logseq-runit-plugin",
+    "title": "logseq-runit-plugin",
+    "icon": "./logo.png",
+    "main": "dist/index.html"
+  }
+}
