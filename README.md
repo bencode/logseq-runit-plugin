@@ -56,7 +56,6 @@ Originally, I wanted to integrate Klipse directly, but due to some technical lim
 
 **Note:**  
 Currently, code execution happens when the code editor loses focus, which is less interactive compared to Klipse.  
-I plan to improve this in the future—ideally, running code with just <kbd>Ctrl+Enter</kbd>.
 
 ## License
 

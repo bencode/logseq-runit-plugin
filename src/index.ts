@@ -5,11 +5,13 @@ import { escapeHtml } from './helper'
 import { compile as compileJs } from './lang/js'
 import { compile as compilePython } from './lang/python'
 import { compile as compileScheme } from './lang/scheme'
+import { compile as compileGoogleCharts } from './lang/google-charts'
 
 const Compilers = {
   js: compileJs,
   python: compilePython,
   scheme: compileScheme,
+  charts: compileGoogleCharts,
 } as Record<string, Compiler>
 
 const main = async () => {
@@ -84,6 +86,13 @@ async function runFn(fn: EvaluateFn, context: Record<string, unknown> | undefine
 }
 
 function buildResponseHtml(res: RunResponse, _slot: string, _uuid: string): string {
+  if (isRenderData(res.result)) {
+    return buildRenderHTML(res.result)
+  }
+  return buildNormalHTML(res)
+}
+
+function buildNormalHTML(res: RunResponse) {
   let html = '<div class="runit-output">'
   if (res.error) {
     html += `<div style="color:red;"><strong>Error:</strong> ${escapeHtml(res.error.message)}<br/><pre>${escapeHtml(res.error.stack || '')}</pre></div>`
@@ -102,4 +111,21 @@ function buildResponseHtml(res: RunResponse, _slot: string, _uuid: string): stri
 
   html += '</div>'
   return html
+}
+
+type RenderData = {
+  $$render: string
+  data: unknown
+}
+
+function isRenderData(result: unknown): result is RenderData {
+  const maybe = result as { $$render: string }
+  return !!maybe.$$render
+}
+
+function buildRenderHTML(rd: RenderData) {
+  if (rd.$$render === 'html') {
+    return rd.data as string
+  }
+  return '<di>Unsupported</div>'
 }
