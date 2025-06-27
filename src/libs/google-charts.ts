@@ -11,11 +11,6 @@ type GoogleCharts = {
   visualization: any
 }
 
-type FigureOptions = {
-  width: number
-  height: number
-}
-
 export async function load() {
   const lib = 'https://www.gstatic.com/charts/loader.js'
   await loadScript(lib)
@@ -33,12 +28,10 @@ export async function load() {
 
   await load(['corechart', 'bar', 'line', 'scatter', 'gauge', 'geochart', 'table'])
 
-  const render = async (type: string, data: unknown[], chartOptions: unknown, figureOption?: FigureOptions) => {
+  const render = async (type: string, data: unknown[], options: unknown) => {
     const id = `google_chart_${guid.current++}`
     const div = document.createElement('div')
     div.id = id
-    div.style.width = `${figureOption?.width ?? 300}px`
-    div.style.height = `${figureOption?.height ?? 300}px`
     const root = document.getElementById('app')!
     root.appendChild(div)
 
@@ -49,10 +42,10 @@ export async function load() {
 
     const chart = new Ctor(div)
     const chartData = Array.isArray(data) ? global.google.visualization.arrayToDataTable(data) : data
-    chart.draw(chartData, chartOptions)
+    chart.draw(chartData, options)
     await sleep(50)
 
-    const html = div.innerHTML
+    const html = div.querySelector('svg')?.outerHTML
     return ['$$render', html]
   }
 
