@@ -38,6 +38,13 @@ export function compileEvaludate(code: string) {
   if (lines.length === 0) {
     return new Function('$context', 'with ($context) { return undefined; }')
   }
+  const toAsync = (body: string) => {
+    return `
+const fn = async() => {
+${body}
+}
+return fn()`
+  }
 
   if (lines.length === 1) {
     const body = `
@@ -45,19 +52,28 @@ export function compileEvaludate(code: string) {
         return (${lines[0]});
       }
     `
-    return new Function('$context', body)
+    return new Function('$context', toAsync(body))
   }
 
   const lastLine = lines[lines.length - 1]
   if (isLikelyExpression(lastLine)) {
     const body = 'with ($context) {\n' + lines.slice(0, -1).join('\n') + '\nreturn (' + lastLine + ');\n}'
-    return new Function('$context', body)
+    return new Function('$context', toAsync(body))
   } else {
     const body = 'with ($context) {\n' + lines.join('\n') + '\n}'
-    return new Function('$context', body)
+    return new Function('$context', toAsync(body))
   }
 }
 
 function isLikelyExpression(line: string) {
-  return !/^\s*(let|const|var|function|return|if|for|while|class|switch|try|catch|do|import|export)\b/.test(line)
+  const test = !/^\s*(let|const|var|function|return|if|for|while|class|switch|try|catch|do|import|export)\b/.test(line)
+  if (!test) {
+    return false
+  }
+  try {
+    new Function(`return (${line})`)
+    return true
+  } catch {
+    return false
+  }
 }
