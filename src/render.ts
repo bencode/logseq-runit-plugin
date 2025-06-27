@@ -27,9 +27,7 @@ export function renderToHtml(rd: RenderData): string {
 }
 
 export function renderToJson(data: unknown) {
-  return `
-<div><pre>${escapeHtml(prettyFormat(data))}</pre></div>
-`
+  return `<div><pre>${escapeHtml(prettyFormat(data))}</pre></div>`
 }
 
 function Row(list: string[]) {
