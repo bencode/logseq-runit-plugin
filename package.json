@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@logseq/libs": "^0.0.17",
+    "js-base64": "^3.7.7",
     "parcel": "^2.15.2",
     "pretty-format": "^30.0.2"
   },

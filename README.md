@@ -26,7 +26,7 @@ Built for [Logseq](https://logseq.com/).
 You can import external JavaScript modules using a special magic comment at the top of your code block:
 
 ```js
-// %import https://esm.sh/ramda as R
+// @import https://esm.sh/ramda as R
 
 R.map(v => v + 1)([1, 2, 3, 4])
 

@@ -5,13 +5,11 @@ import { escapeHtml } from './helper'
 import { compile as compileJs } from './lang/js'
 import { compile as compilePython } from './lang/python'
 import { compile as compileScheme } from './lang/scheme'
-import { compile as compileGoogleCharts } from './lang/google-charts'
 
 const Compilers = {
   js: compileJs,
   python: compilePython,
   scheme: compileScheme,
-  charts: compileGoogleCharts,
 } as Record<string, Compiler>
 
 const main = async () => {
@@ -120,7 +118,7 @@ type RenderData = {
 
 function isRenderData(result: unknown): result is RenderData {
   const maybe = result as { $$render: string }
-  return !!maybe.$$render
+  return !!maybe?.$$render
 }
 
 function buildRenderHTML(rd: RenderData) {
