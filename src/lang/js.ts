@@ -2,22 +2,12 @@ import type { EvaluateFn } from '../types'
 import { loadModule } from '../libs/loader'
 
 export function compile(code: string) {
-  // 支持指令
-  // @import <name|url> as <name>
-  const importRegex = /^\/\/\s*@import\s+(\S+)\s+as\s+(\w+)/gm
-  const importLines = Array.from(code.matchAll(importRegex))
-  const codeBody = code.replace(importRegex, '').trim()
-
   const setup = async () => {
-    const context: Record<string, unknown> = {}
-    for (const match of importLines) {
-      const mod = await loadModule(match[1])
-      context[match[2]] = mod
-    }
+    const context = { $import: loadModule }
     return context
   }
 
-  const fn = compileEvaludate(codeBody)
+  const fn = compileEvaludate(code)
   const evaluate: EvaluateFn = async (context, helper) => {
     const g = globalThis
     const error = g.console.error.bind(g.console)
