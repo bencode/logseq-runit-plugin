@@ -12,6 +12,8 @@ export function compile(code: string) {
 
   const setup = async () => {
     await loadScript(lib)
+    const context: Record<string, unknown> = {}
+    return context
   }
 
   const evaluate: EvaluateFn = async (_context, helper) => {

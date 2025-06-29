@@ -1,10 +1,14 @@
 import '@logseq/libs'
+import createDebug from 'debug'
 import { format as prettyFormat } from 'pretty-format'
 import type { Args, EvaluateFn, RunResponse, Compiler } from './types'
 import { escapeHtml } from './helper'
 import { compile as compileJs } from './lang/js'
 import { compile as compilePython } from './lang/python'
 import { compile as compileScheme } from './lang/scheme'
+import { isRenderData, renderToHtml, renderToJson } from './render'
+
+const debug = createDebug('runit:index')
 
 const Compilers = {
   js: compileJs,
@@ -83,8 +87,20 @@ async function runFn(fn: EvaluateFn, context: Record<string, unknown> | undefine
   }
 }
 
-function buildResponseHtml(res: RunResponse, _slot: string, _uuid: string): string {
+function buildResponseHtml(res: RunResponse, _slot: string, _uuid: string) {
+  debug('render: %o', res)
+  if (isRenderData(res.result)) {
+    return renderToHtml(res.result)
+  }
+  if (Array.isArray(res.result) && isRenderData(res.result[0])) {
+    return renderToHtml(['$$render', 'Row', res.result])
+  }
+  return renderResponseHtml(res)
+}
+
+function renderResponseHtml(res: RunResponse) {
   let html = '<div class="runit-output">'
+
   if (res.error) {
     html += `<div style="color:red;"><strong>Error:</strong> ${escapeHtml(res.error.message)}<br/><pre>${escapeHtml(res.error.stack || '')}</pre></div>`
   }
@@ -98,7 +114,7 @@ function buildResponseHtml(res: RunResponse, _slot: string, _uuid: string): stri
     html += '</ul></div>'
   }
 
-  html += `<div><pre>${escapeHtml(prettyFormat(res.result))}</pre></div>`
+  html += renderToJson(res.result)
 
   html += '</div>'
   return html

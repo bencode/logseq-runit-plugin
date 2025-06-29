@@ -28,3 +28,9 @@ export function loadScript(url: string): Promise<void> {
     document.head.appendChild(script)
   })
 }
+
+export function sleep(timeout: number) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, timeout)
+  })
+}

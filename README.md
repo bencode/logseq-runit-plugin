@@ -23,10 +23,10 @@ Built for [Logseq](https://logseq.com/).
 
 ### Importing External JavaScript Modules
 
-You can import external JavaScript modules using a special magic comment at the top of your code block:
+You can import external JavaScript modules using the `$import` function:
 
 ```js
-// %import https://esm.sh/ramda as R
+const R = await $import('https://esm.sh/ramda')
 
 R.map(v => v + 1)([1, 2, 3, 4])
 
@@ -39,9 +39,33 @@ Array [
 ]
 ```
 
-Just replace the URL and alias (`R` in this example) as needed.  
-This allows you to use libraries from CDNs like [esm.sh](https://esm.sh/) directly in your code snippets.
+The `$import` function supports both URLs and module names, allowing you to use libraries from CDNs like [esm.sh](https://esm.sh/) directly in your code snippets.
 
+### Google Charts Integration
+
+You can create interactive charts using Google Charts:
+
+```js
+const chart = await $import('google-charts')
+const data = [
+  ['Task', 'Hours per Day'],
+  ['Work',     11],
+  ['Eat',      2],
+  ['Commute',  2],
+  ['Watch TV', 2],
+  ['Sleep',    7]
+]
+const options = {
+  title: 'My Daily Activities',
+  width: 500,
+  height: 300
+}
+chart.render('PieChart', data, options)
+```
+
+The Google Charts integration supports various chart types including PieChart, BarChart, LineChart, ScatterChart, Gauge, GeoChart, and Table. Charts are rendered as interactive SVG elements directly in your notes.
+
+For more chart types and configuration options, see the [Google Charts Gallery](https://developers.google.com/chart/interactive/docs/gallery/linechart).
 
 ## Development
 
@@ -56,7 +80,6 @@ Originally, I wanted to integrate Klipse directly, but due to some technical lim
 
 **Note:**  
 Currently, code execution happens when the code editor loses focus, which is less interactive compared to Klipse.  
-I plan to improve this in the future—ideally, running code with just <kbd>Ctrl+Enter</kbd>.
 
 ## License
 
