@@ -72,8 +72,6 @@ For more chart types and configuration options, see the [Google Charts Gallery](
 
 The plugin supports running Scheme code snippets via BiwaScheme, allowing you to execute and view results conveniently in your notes:
 
-**Recursive Function:**
-
 ```scheme
 (define (fib n)
   (if (< n 2) n

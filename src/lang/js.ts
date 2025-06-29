@@ -36,15 +36,6 @@ ${body}
 return fn()`
   }
 
-  if (lines.length === 1) {
-    const body = `
-      with ($context) {
-        return (${lines[0]});
-      }
-    `
-    return new Function('$context', toAsync(body))
-  }
-
   const lastLine = lines[lines.length - 1]
   if (isLikelyExpression(lastLine)) {
     const body = 'with ($context) {\n' + lines.slice(0, -1).join('\n') + '\nreturn (' + lastLine + ');\n}'
