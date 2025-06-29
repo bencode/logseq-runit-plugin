@@ -4,7 +4,7 @@ A Logseq plugin for running code snippets directly inside your notes.
 Supports JavaScript, Python (via [Pyodide](https://pyodide.org/)), and Scheme (via [BiwaScheme](https://www.biwascheme.org/)) with interactive output.  
 Built for [Logseq](https://logseq.com/).
 
-![Demo](images/p1.gif)
+![Demo](images/p2.gif)
 
 ## Features
 
