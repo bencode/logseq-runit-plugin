@@ -67,6 +67,21 @@ The Google Charts integration supports various chart types including PieChart, B
 
 For more chart types and configuration options, see the [Google Charts Gallery](https://developers.google.com/chart/interactive/docs/gallery/linechart).
 
+
+### Scheme Support
+
+The plugin supports running Scheme code snippets via BiwaScheme, allowing you to execute and view results conveniently in your notes:
+
+**Recursive Function:**
+
+(define (fib n)
+  (if (< n 2) n
+      (+ (fib (- n 1)) (fib (- n 2)))))
+(fib 8)
+```
+
+These examples showcase Scheme's elegant syntax and functional programming capabilities within the runit environment.
+
 ## Development
 
 - Clone the repo and run `pnpm install`.
