@@ -1,4 +1,4 @@
-import { loadScript, sleep } from '../helper'
+import { loadScript } from '../helper'
 
 const guid = { current: 1 }
 
@@ -43,9 +43,11 @@ export async function load() {
     const chart = new Ctor(div)
     const chartData = Array.isArray(data) ? global.google.visualization.arrayToDataTable(data) : data
     chart.draw(chartData, options)
-    await sleep(50)
-
     const html = div.querySelector('svg')?.outerHTML
+
+    // Clean up the DOM element
+    root.removeChild(div)
+
     return ['$$render', html]
   }
 
