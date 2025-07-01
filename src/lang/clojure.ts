@@ -6,7 +6,7 @@ type EsciApp = {
 }
 
 export function compile(code: string) {
-  const lib = 'https://cdn.jsdelivr.net/gh/bencode/logseq-runit-plugin@main/esci/public/js/main.js'
+  const lib = 'https://cdn.jsdelivr.net/gh/bencode/logseq-runit-plugin@v0.1.0/esci/public/js/main.js'
 
   const setup = async () => {
     await loadScript(lib)
