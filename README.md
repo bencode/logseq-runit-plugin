@@ -23,15 +23,6 @@ Built for [Logseq](https://logseq.com/).
 
 **Note:** When using the `/Create Runit Snippet` command, ensure the generated macro remains attached to the current block. Use Shift+Enter for line breaks within the same block before running the Slash Command, rather than creating a new separate block.
 
-```
-\`\`\`js
-code here
-\`\`\`
-{{renderer :runit_68640047-1746-41e1-8e02-d08ae0e39852}}
-```
-
-`
-
 ### Importing External JavaScript Modules
 
 You can import external JavaScript modules using the `$import` function:
