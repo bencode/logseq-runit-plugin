@@ -79,8 +79,6 @@ The plugin supports running Scheme code snippets via BiwaScheme, allowing you to
 (fib 8)
 ```
 
-These examples showcase Scheme's elegant syntax and functional programming capabilities within the runit environment.
-
 ## Development
 
 - Clone the repo and run `pnpm install`.
