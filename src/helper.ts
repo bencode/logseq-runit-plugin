@@ -29,6 +29,17 @@ export function loadScript(url: string): Promise<void> {
   })
 }
 
+export async function waitFn(fn: () => unknown) {
+  for (let i = 0; i < 10; i++) {
+    const ret = fn()
+    if (fn !== undefined) {
+      return ret
+    }
+    await sleep(50)
+  }
+  return false
+}
+
 export function sleep(timeout: number) {
   return new Promise((resolve) => {
     setTimeout(resolve, timeout)

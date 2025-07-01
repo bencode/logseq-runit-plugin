@@ -1,5 +1,5 @@
 import type { EvaluateFn } from '../types'
-import { loadScript, sleep } from '../helper'
+import { loadScript, waitFn } from '../helper'
 
 type BiwaScheme = {
   Interpreter: new (onError: (e: Error) => void) => {
@@ -12,9 +12,8 @@ export function compile(code: string) {
 
   const setup = async () => {
     await loadScript(lib)
-    // Wait for BiwaScheme library to fully initialize its global objects
-    // The script load event fires before the library sets up its globals
-    await sleep(10)
+    const global = globalThis as unknown as { BiwaScheme: BiwaScheme }
+    await waitFn(() => global.BiwaScheme)
     const context: Record<string, unknown> = {}
     return context
   }
