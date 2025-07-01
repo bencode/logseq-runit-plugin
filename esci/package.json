@@ -1,0 +1,13 @@
+{
+  "name": "esci",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "shadow-cljs watch app",
+    "build": "shadow-cljs release app",
+    "test": "shadow-cljs test app"
+  },
+  "devDependencies": {
+    "shadow-cljs": "^3.1.7"
+  }
+}
