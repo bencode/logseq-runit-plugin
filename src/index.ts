@@ -6,6 +6,7 @@ import { escapeHtml } from './helper'
 import { compile as compileJs } from './lang/js'
 import { compile as compilePython } from './lang/python'
 import { compile as compileScheme } from './lang/scheme'
+import { compile as compileClojure } from './lang/clojure'
 import { isRenderData, renderToHtml, renderToJson } from './render'
 
 const debug = createDebug('runit:index')
@@ -14,6 +15,7 @@ const Compilers = {
   js: compileJs,
   python: compilePython,
   scheme: compileScheme,
+  clojure: compileClojure,
 } as Record<string, Compiler>
 
 const main = async () => {

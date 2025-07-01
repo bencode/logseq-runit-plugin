@@ -16,3 +16,4 @@
     (catch js/Error e
       (js/console.error "Execution error:" e)
       nil)))
+
