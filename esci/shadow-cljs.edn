@@ -3,7 +3,7 @@
  ["src"]
 
  :dependencies
- []
+ [[org.babashka/sci "0.10.47"]]
 
  :dev-http {8000 "public"}
 
