@@ -1,14 +1,14 @@
 # logseq-runit-plugin
 
 A Logseq plugin for running code snippets directly inside your notes.  
-Supports JavaScript, Python (via [Pyodide](https://pyodide.org/)), and Scheme (via [BiwaScheme](https://www.biwascheme.org/)) with interactive output.  
+Supports JavaScript, Python (via [Pyodide](https://pyodide.org/)), Scheme (via [BiwaScheme](https://www.biwascheme.org/)), and Clojure (via [SCI](https://github.com/babashka/sci)) with interactive output.  
 Built for [Logseq](https://logseq.com/).
 
 ![Demo](images/p2.gif)
 
 ## Features
 
-- **Multi-language support:** Run JavaScript, Python, and Scheme code blocks.
+- **Multi-language support:** Run JavaScript, Python, Scheme, and Clojure code blocks.
 - **Console output capture:** See `console.log`/`print` output inline.
 - **Last expression result:** Automatically displays the result of the last expression, similar to Jupyter notebooks.
 - **Dynamic imports:** Supports dynamic module imports for JavaScript.
@@ -18,7 +18,7 @@ Built for [Logseq](https://logseq.com/).
 
 1. Install the plugin in Logseq.
 2. Use the `/Create Runit Snippet` command to insert a code block.
-3. Write your code in JavaScript, Python, or Scheme inside the block.
+3. Write your code in JavaScript, Python, Scheme, or Clojure inside the block.
 4. The output and console logs will be displayed below the code.
 
 ### Importing External JavaScript Modules
@@ -78,6 +78,21 @@ The plugin supports running Scheme code snippets via BiwaScheme, allowing you to
       (+ (fib (- n 1)) (fib (- n 2)))))
 (fib 8)
 ```
+
+### Clojure Support
+
+The plugin supports running Clojure code snippets via SCI (Small Clojure Interpreter), allowing you to execute ClojureScript code directly in your notes:
+
+```clojure
+(defn factorial [n]
+  (if (<= n 1)
+    1
+    (* n (factorial (dec n)))))
+
+(factorial 5)
+```
+
+SCI provides a safe, sandboxed environment for executing Clojure code with most of the core ClojureScript functionality available.
 
 ## Development
 
