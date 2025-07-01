@@ -30,14 +30,12 @@ export function loadScript(url: string): Promise<void> {
 }
 
 export async function waitFn(fn: () => unknown) {
-  for (let i = 0; i < 10; i++) {
-    const ret = fn()
-    if (fn !== undefined) {
-      return ret
-    }
-    await sleep(50)
+  let ret = fn()
+  while (!ret) {
+    ret = fn()
+    await sleep(100)
   }
-  return false
+  return ret
 }
 
 export function sleep(timeout: number) {

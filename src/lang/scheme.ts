@@ -12,14 +12,13 @@ export function compile(code: string) {
 
   const setup = async () => {
     await loadScript(lib)
-    const global = globalThis as unknown as { BiwaScheme: BiwaScheme }
-    await waitFn(() => global.BiwaScheme)
     const context: Record<string, unknown> = {}
     return context
   }
 
   const evaluate: EvaluateFn = async (_context, helper) => {
     const global = globalThis as unknown as { BiwaScheme: BiwaScheme }
+    await waitFn(() => global.BiwaScheme)
     return new Promise((resolve, reject) => {
       const onError = (e: Error) => reject(e)
       const biwa = new global.BiwaScheme.Interpreter(onError)
