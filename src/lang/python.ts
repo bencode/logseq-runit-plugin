@@ -41,6 +41,8 @@ export const createCompiler: CompilerFactory = async () => {
       }
     }
 
+    defineBuildIn(pyodide)
+
     const evaluate: EvaluateFn = async (_context, helper) => {
       const originLog = globalThis.console.log
       globalThis.console.log = helper.log
@@ -63,6 +65,21 @@ function extractPipInstalls(code: string) {
     return match ? match[1].split(/\s+/) : []
   })
   return packages
+}
+
+function defineBuildIn(pyodide: PyodideHandler) {
+  pyodide.runPython(`
+import io
+
+def plt_show():
+    """Render current matplotlib figure as SVG"""
+    import matplotlib.pyplot as plt
+    svg_buffer = io.StringIO()
+    plt.savefig(svg_buffer, format='svg')
+    svg_string = svg_buffer.getvalue()
+    plt.close()  # Clean up the figure
+    return ['$$render', svg_string]
+`)
 }
 
 function rewritePythonCode(pyodide: PyodideHandler, code: string): string {
