@@ -65,7 +65,7 @@ const options = {
 chart.render('PieChart', data, options)
 ```
 
-[!GoogleCharts](images/p3.svg)
+!!GoogleCharts](images/p3.svg)
 
 The Google Charts integration supports various chart types including PieChart, BarChart, LineChart, ScatterChart, Gauge, GeoChart, and Table. Charts are rendered as interactive SVG elements directly in your notes.
 
