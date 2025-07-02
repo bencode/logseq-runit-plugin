@@ -1,5 +1,7 @@
 import '@logseq/libs'
 
+const loadMap = new Map<string, Promise<void>>()
+
 export function escapeHtml(str: string) {
   return String(str).replace(
     /[&<>"']/g,
@@ -15,11 +17,11 @@ export function escapeHtml(str: string) {
 }
 
 export function loadScript(url: string): Promise<void> {
-  return new Promise((resolve, reject) => {
-    if (document.querySelector(`script[src="${url}"]`)) {
-      resolve()
-      return
-    }
+  const defer = loadMap.get(url)
+  if (defer) {
+    return defer
+  }
+  const next = new Promise<void>((resolve, reject) => {
     const script = document.createElement('script')
     script.src = url
     script.async = true
@@ -27,15 +29,8 @@ export function loadScript(url: string): Promise<void> {
     script.onerror = () => reject(new Error(`Failed to load script: ${url}`))
     document.head.appendChild(script)
   })
-}
-
-export async function waitFn(fn: () => unknown) {
-  let ret = fn()
-  while (!ret) {
-    ret = fn()
-    await sleep(100)
-  }
-  return ret
+  loadMap.set(url, next)
+  return next
 }
 
 export function sleep(timeout: number) {

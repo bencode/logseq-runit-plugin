@@ -24,14 +24,18 @@ export const createCompiler: CompilerFactory = async () => {
   const global = globalThis as unknown as { loadPyodide: PyodideLoader }
   const pyodide = await global.loadPyodide()
   await pyodide.loadPackage('micropip')
+  const pkgSet = new Set<string>()
 
   return async (code: string) => {
     const micropip = pyodide.pyimport('micropip') as MicroPipHandler
     const packages = extractPipInstalls(code)
     for (const pkg of packages) {
+      if (pkgSet.has(pkg)) {
+        continue
+      }
       try {
         await micropip.install(pkg)
-        console.log(`Successfully installed: ${pkg}`)
+        pkgSet.add(pkg)
       } catch (error) {
         console.warn(`Failed to install package: ${pkg}`, error)
       }
@@ -43,9 +47,8 @@ export const createCompiler: CompilerFactory = async () => {
       const rewritten = rewritePythonCode(pyodide, code)
       await pyodide.runPython(rewritten)
       globalThis.console.log = originLog
-
       const result = pyodide.globals.get('__result__')
-      return result
+      return result?.toJs()
     }
 
     return evaluate

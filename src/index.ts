@@ -1,7 +1,7 @@
 import '@logseq/libs'
 import createDebug from 'debug'
 import { format as prettyFormat } from 'pretty-format'
-import type { Args, EvaluateFn, RunResponse, CompilerFactory } from './types'
+import type { Args, EvaluateFn, RunResponse, Compiler, CompilerFactory } from './types'
 import { escapeHtml } from './helper'
 import { createCompiler as JsCompilerFactory } from './lang/js'
 import { createCompiler as PythonCompilerFactory } from './lang/python'
@@ -60,18 +60,29 @@ const main = async () => {
 
 logseq.ready(main).catch(console.error)
 
-async function runCode(_block: string, code: string, lang: string) {
-  const factory = Compilers[lang]
-  if (!factory) {
-    throw new Error(`Unsupported language: ${lang}`)
-  }
+async function runCode(blockId: string, code: string, lang: string) {
   try {
-    const compiler = await factory()
+    const compiler = await loadCompiler(lang, blockId)
     const evaluate = await compiler(code)
     return runFn(evaluate, {})
   } catch (error) {
     return { error: error as Error }
   }
+}
+
+const compilerMap = new Map<string, Promise<Compiler>>()
+
+async function loadCompiler(lang: string, blockId: string) {
+  if (compilerMap.has(blockId)) {
+    return compilerMap.get(blockId)!
+  }
+  const factory = Compilers[lang]
+  if (!factory) {
+    throw new Error(`Unsupported language: ${lang}`)
+  }
+  const compiler = factory()
+  compilerMap.set(blockId, compiler)
+  return compiler
 }
 
 async function runFn(fn: EvaluateFn, context: Record<string, unknown> | undefined) {
