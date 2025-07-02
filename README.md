@@ -119,7 +119,7 @@ plt.legend()
 plt_show()
 ```
 
-![Python Plot Example](images/p4.svg)
+![Python Plot Example](images/p5.svg)
 
 ### Scheme Support
 
