@@ -1,4 +1,4 @@
-import type { EvaluateFn } from '../types'
+import type { CompilerFactory, EvaluateFn } from '../types'
 import { loadScript, waitFn } from '../helper'
 
 type BiwaScheme = {
@@ -7,29 +7,25 @@ type BiwaScheme = {
   }
 }
 
-export function compile(code: string) {
+export const createCompiler: CompilerFactory = async () => {
   const lib = 'https://cdn.jsdelivr.net/gh/biwascheme/biwascheme@main/release/biwascheme-0.8.0.js'
+  await loadScript(lib)
 
-  const setup = async () => {
-    await loadScript(lib)
-    const context: Record<string, unknown> = {}
-    return context
-  }
-
-  const evaluate: EvaluateFn = async (_context, helper) => {
-    const global = globalThis as unknown as { BiwaScheme: BiwaScheme }
-    await waitFn(() => global.BiwaScheme)
-    return new Promise((resolve, reject) => {
-      const onError = (e: Error) => reject(e)
-      const biwa = new global.BiwaScheme.Interpreter(onError)
-      const originLog = globalThis.console.log
-      globalThis.console.log = helper.log
-      biwa.evaluate(code, function (result) {
-        globalThis.console.log = originLog
-        resolve(result)
+  return async (code: string) => {
+    const evaluate: EvaluateFn = async (_context, helper) => {
+      const global = globalThis as unknown as { BiwaScheme: BiwaScheme }
+      await waitFn(() => global.BiwaScheme)
+      return new Promise((resolve, reject) => {
+        const onError = (e: Error) => reject(e)
+        const biwa = new global.BiwaScheme.Interpreter(onError)
+        const originLog = globalThis.console.log
+        globalThis.console.log = helper.log
+        biwa.evaluate(code, function (result) {
+          globalThis.console.log = originLog
+          resolve(result)
+        })
       })
-    })
+    }
+    return evaluate
   }
-
-  return { setup, evaluate }
 }

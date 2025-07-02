@@ -1,22 +1,22 @@
 import '@logseq/libs'
 import createDebug from 'debug'
 import { format as prettyFormat } from 'pretty-format'
-import type { Args, EvaluateFn, RunResponse, Compiler } from './types'
+import type { Args, EvaluateFn, RunResponse, CompilerFactory } from './types'
 import { escapeHtml } from './helper'
-import { compile as compileJs } from './lang/js'
-import { compile as compilePython } from './lang/python'
-import { compile as compileScheme } from './lang/scheme'
-import { compile as compileClojure } from './lang/clojure'
+import { createCompiler as JsCompilerFactory } from './lang/js'
+import { createCompiler as PythonCompilerFactory } from './lang/python'
+import { createCompiler as SchemeCompilerFactory } from './lang/scheme'
+import { createCompiler as ClojureCompilerFactory } from './lang/clojure'
 import { isRenderData, renderToHtml, renderToJson } from './render'
 
 const debug = createDebug('runit:index')
 
 const Compilers = {
-  js: compileJs,
-  python: compilePython,
-  scheme: compileScheme,
-  clojure: compileClojure,
-} as Record<string, Compiler>
+  js: JsCompilerFactory,
+  python: PythonCompilerFactory,
+  scheme: SchemeCompilerFactory,
+  clojure: ClojureCompilerFactory,
+} as Record<string, CompilerFactory>
 
 const main = async () => {
   logseq.Editor.registerSlashCommand('Create Runit Snippet', async (e) => {
@@ -46,7 +46,7 @@ const main = async () => {
     const code = match[2].trim()
     window.console.log('runit', { lang, code })
 
-    const res = await runCode(code, lang)
+    const res = await runCode(uuid, code, lang)
     const html = buildResponseHtml(res, slot, uuid)
 
     logseq.provideUI({
@@ -60,15 +60,15 @@ const main = async () => {
 
 logseq.ready(main).catch(console.error)
 
-async function runCode(code: string, lang: string) {
-  const compile = Compilers[lang]
-  if (!compile) {
+async function runCode(_block: string, code: string, lang: string) {
+  const factory = Compilers[lang]
+  if (!factory) {
     throw new Error(`Unsupported language: ${lang}`)
   }
   try {
-    const { setup, evaluate } = compile(code)
-    const context = await setup()
-    return runFn(evaluate, context)
+    const compiler = await factory()
+    const evaluate = await compiler(code)
+    return runFn(evaluate, {})
   } catch (error) {
     return { error: error as Error }
   }

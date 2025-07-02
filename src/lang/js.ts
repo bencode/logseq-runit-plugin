@@ -1,26 +1,24 @@
-import type { EvaluateFn } from '../types'
+import type { CompilerFactory, EvaluateFn } from '../types'
 import { loadModule } from '../libs/loader'
 
-export function compile(code: string) {
-  const setup = async () => {
-    const context = { $import: loadModule }
-    return context
-  }
-
-  const fn = compileEvaludate(code)
-  const evaluate: EvaluateFn = async (context, helper) => {
-    const g = globalThis
-    const error = g.console.error.bind(g.console)
-    const warn = g.console.warn.bind(g.console)
-    const debug = g.console.debug.bind(g.console)
-    const console = { debug, warn, error, log: helper.log }
-    const ctx = {
-      ...context,
-      console,
+export const createCompiler: CompilerFactory = async () => {
+  return async (code: string) => {
+    const fn = compileEvaludate(code)
+    const evaluate: EvaluateFn = async (context, helper) => {
+      const g = globalThis
+      const error = g.console.error.bind(g.console)
+      const warn = g.console.warn.bind(g.console)
+      const debug = g.console.debug.bind(g.console)
+      const console = { debug, warn, error, log: helper.log }
+      const ctx = {
+        console,
+        $import: loadModule,
+        ...context,
+      }
+      return fn(ctx)
     }
-    return fn(ctx)
+    return evaluate
   }
-  return { setup, evaluate }
 }
 
 export function compileEvaludate(code: string) {

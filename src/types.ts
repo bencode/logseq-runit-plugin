@@ -7,12 +7,10 @@ export type RunResponse = Partial<{
   error: Error
 }>
 
+export type CompilerFactory = () => Promise<Compiler>
+export type Compiler = (code: string) => Promise<EvaluateFn>
+
 export type EvaluateFn = (context: Dict, helper: EvaluateHelper) => unknown
 export type EvaluateHelper = {
   log: (...args: Args) => void
-}
-
-export type Compiler = (code: string) => {
-  setup: () => Promise<Dict | undefined>
-  evaluate: EvaluateFn
 }
