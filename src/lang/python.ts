@@ -1,9 +1,12 @@
-import type { EvaluateFn } from '../types'
+import type { CompilerFactory, EvaluateFn } from '../types'
 import { loadScript } from '../helper'
 
 type PyodideLoader = () => Promise<PyodideHandler>
 type PyodideHandler = {
   runPython: (code: string) => Promise<unknown>
+  loadPyodide: (name: string) => Promise<void>
+  loadPackage: (name: string) => Promise<void>
+  pyimport: (name: string) => unknown
   globals: {
     get: (name: string) => {
       toJs: () => unknown
@@ -11,28 +14,72 @@ type PyodideHandler = {
   }
 }
 
-export function compile(code: string) {
+type MicroPipHandler = {
+  install: (name: string) => Promise<void>
+}
+
+export const createCompiler: CompilerFactory = async () => {
   const lib = 'https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pyodide.js'
-  const ref: { current?: PyodideHandler } = {}
-  const setup = async () => {
-    await loadScript(lib)
-    const global = globalThis as unknown as { loadPyodide: PyodideLoader }
-    ref.current = await global.loadPyodide()
+  await loadScript(lib)
+  const global = globalThis as unknown as { loadPyodide: PyodideLoader }
+  const pyodide = await global.loadPyodide()
+  await pyodide.loadPackage('micropip')
+  const pkgSet = new Set<string>()
+
+  return async (code: string) => {
+    const micropip = pyodide.pyimport('micropip') as MicroPipHandler
+    const packages = extractPipInstalls(code)
+    for (const pkg of packages) {
+      if (pkgSet.has(pkg)) {
+        continue
+      }
+      try {
+        await micropip.install(pkg)
+        pkgSet.add(pkg)
+      } catch (error) {
+        console.warn(`Failed to install package: ${pkg}`, error)
+      }
+    }
+
+    defineBuildIn(pyodide)
+
+    const evaluate: EvaluateFn = async (_context, helper) => {
+      const originLog = globalThis.console.log
+      globalThis.console.log = helper.log
+      const rewritten = rewritePythonCode(pyodide, code)
+      await pyodide.runPython(rewritten)
+      globalThis.console.log = originLog
+      const result = pyodide.globals.get('__result__')
+      return result?.toJs()
+    }
+
+    return evaluate
   }
+}
 
-  const evaluate: EvaluateFn = async (_context, helper) => {
-    const pyodide = ref.current!
-    const originLog = globalThis.console.log
-    globalThis.console.log = helper.log
-    const rewritten = rewritePythonCode(pyodide, code)
-    await pyodide.runPython(rewritten)
-    globalThis.console.log = originLog
+function extractPipInstalls(code: string) {
+  const lines = code.split('\n')
+  const packages = lines.flatMap((line) => {
+    const trimmed = line.trim()
+    const match = trimmed.match(/^#%\s+pip\s+install\s+(.+)$/)
+    return match ? match[1].split(/\s+/) : []
+  })
+  return packages
+}
 
-    const result = pyodide.globals.get('__result__')
-    return result
-  }
+function defineBuildIn(pyodide: PyodideHandler) {
+  pyodide.runPython(`
+import io
 
-  return { setup, evaluate }
+def plt_show():
+    """Render current matplotlib figure as SVG"""
+    import matplotlib.pyplot as plt
+    svg_buffer = io.StringIO()
+    plt.savefig(svg_buffer, format='svg')
+    svg_string = svg_buffer.getvalue()
+    plt.close()  # Clean up the figure
+    return ['$$render', svg_string]
+`)
 }
 
 function rewritePythonCode(pyodide: PyodideHandler, code: string): string {
