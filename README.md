@@ -65,10 +65,61 @@ const options = {
 chart.render('PieChart', data, options)
 ```
 
+[!GoogleCharts](images/p3.svg)
+
 The Google Charts integration supports various chart types including PieChart, BarChart, LineChart, ScatterChart, Gauge, GeoChart, and Table. Charts are rendered as interactive SVG elements directly in your notes.
 
 For more chart types and configuration options, see the [Google Charts Gallery](https://developers.google.com/chart/interactive/docs/gallery/linechart).
 
+### Python Support
+
+The plugin supports running Python code via [Pyodide](https://pyodide.org/), bringing the full Python scientific computing stack to your browser.
+
+#### Basic Python Usage
+
+```python
+#% pip install numpy
+
+import numpy as np
+
+# Create a simple array
+arr = np.array([1, 2, 3, 4, 5])
+print("Array:", arr)
+print("Sum:", np.sum(arr))
+print("Mean:", np.mean(arr))
+
+# Return result
+arr * 2
+```
+
+#### Creating Plots with Matplotlib
+
+```python
+#% pip install matplotlib numpy
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Create data
+x = np.linspace(0, 10, 100)
+y1 = np.sin(x)
+y2 = np.cos(x)
+
+# Create the plot
+plt.figure(figsize=(10, 6))
+plt.plot(x, y1, 'b-', linewidth=2, label='sin(x)')
+plt.plot(x, y2, 'r--', linewidth=2, label='cos(x)')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.title('Trigonometric Functions')
+plt.grid(True, alpha=0.3)
+plt.legend()
+
+# Render the plot
+plt_show()
+```
+
+![Python Plot Example](images/p4.svg)
 
 ### Scheme Support
 
