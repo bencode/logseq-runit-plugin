@@ -1,6 +1,5 @@
 {
   "name": "logseq-runit-plugin",
-  "version": "0.2.0",
   "description": "A Logseq plugin for running JavaScript, Python, and Scheme code snippets directly inside your notes, with interactive output and console capture.",
   "keywords": [],
   "scripts": {
@@ -29,6 +28,21 @@
     "title": "logseq-runit-plugin",
     "icon": "./icon.svg",
     "main": "dist/index.html"
+  },
+  "release": {
+    "branches": [
+      "main"
+    ],
+    "plugins": [
+      [
+        "@semantic-release/github",
+        {
+          "assets": [
+            "logseq-runit-plugin.zip"
+          ]
+        }
+      ]
+    ]
   },
   "author": "Qijun",
   "license": "MIT"
