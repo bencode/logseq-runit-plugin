@@ -1,7 +1,7 @@
 # logseq-runit-plugin
 
 A Logseq plugin for running code snippets directly inside your notes.  
-Supports JavaScript, Python (via [Pyodide](https://pyodide.org/)), Scheme (via [BiwaScheme](https://www.biwascheme.org/)), and Clojure (via [SCI](https://github.com/babashka/sci)) with interactive output.  
+Supports JavaScript, Python (via [Pyodide](https://pyodide.org/)), Scheme (via [BiwaScheme](https://www.biwascheme.org/)), and Clojure (via [sci](https://github.com/babashka/sci)) with interactive output.  
 Built for [Logseq](https://logseq.com/).
 
 ![Demo](images/p2.gif)
@@ -134,7 +134,7 @@ The plugin supports running Scheme code snippets via BiwaScheme, allowing you to
 
 ### Clojure Support
 
-The plugin supports running Clojure code snippets via SCI (Small Clojure Interpreter), allowing you to execute ClojureScript code directly in your notes:
+The plugin supports running Clojure code snippets via sci (Small Clojure Interpreter), allowing you to execute ClojureScript code directly in your notes:
 
 ```clojure
 (defn factorial [n]
@@ -145,7 +145,7 @@ The plugin supports running Clojure code snippets via SCI (Small Clojure Interpr
 (factorial 5)
 ```
 
-SCI provides a safe, sandboxed environment for executing Clojure code with most of the core ClojureScript functionality available.
+sci provides a safe, sandboxed environment for executing Clojure code with most of the core ClojureScript functionality available.
 
 ## Development
 

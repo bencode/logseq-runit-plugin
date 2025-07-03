@@ -20,7 +20,7 @@
   "logseq": {
     "id": "logseq-runit-plugin",
     "title": "logseq-runit-plugin",
-    "icon": "./logo.png",
+    "icon": "./icon.svg",
     "main": "dist/index.html"
   },
   "devDependencies": {
