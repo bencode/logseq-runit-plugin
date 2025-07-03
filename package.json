@@ -15,7 +15,6 @@
     "parcel": "^2.15.2",
     "pretty-format": "^30.0.2"
   },
-
   "devDependencies": {
     "@eslint/js": "^9.29.0",
     "@types/debug": "^4.1.12",
