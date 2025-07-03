@@ -1,27 +1,27 @@
 # logseq-runit-plugin
 
 A Logseq plugin for running code snippets directly inside your notes.  
-Supports JavaScript, Python (via [Pyodide](https://pyodide.org/)), Scheme (via [BiwaScheme](https://www.biwascheme.org/)), and Clojure (via [sci](https://github.com/babashka/sci)) with interactive output.  
+Supports JavaScript, Python (via [Pyodide](https://pyodide.org/)), Scheme (via [BiwaScheme](https://www.biwascheme.org/)), and Clojure (via [SCI](https://github.com/babashka/sci)) with interactive output.  
 Built for [Logseq](https://logseq.com/).
 
 ![Demo](images/p2.gif)
 
 ## Features
 
-- **Multi-language support:** Run JavaScript, Python, Scheme, and Clojure code blocks.
-- **Console output capture:** See `console.log`/`print` output inline.
-- **Last expression result:** Automatically displays the result of the last expression, similar to Jupyter notebooks.
-- **Dynamic imports:** Supports dynamic module imports for JavaScript.
-- **Easy insertion:** Use the `/Create Runit Snippet` slash command to insert runnable code blocks.
+- **Multi-language support**: Run JavaScript, Python, Scheme, and Clojure code blocks
+- **Console output capture**: See `console.log`/`print` output inline
+- **Last expression result**: Automatically displays the result of the last expression, similar to Jupyter notebooks
+- **Dynamic imports**: Supports dynamic module imports for JavaScript
+- **Easy insertion**: Use the `/Create Runit Snippet` slash command to insert runnable code blocks
 
 ## Usage
 
-1. Install the plugin in Logseq.
-2. Use the `/Create Runit Snippet` command to insert a code block.
-3. Write your code in JavaScript, Python, Scheme, or Clojure inside the block.
-4. The output and console logs will be displayed below the code.
+1. Install the plugin in Logseq
+2. Use the `/Create Runit Snippet` command to insert a code block
+3. Write your code in JavaScript, Python, Scheme, or Clojure inside the block
+4. The output and console logs will be displayed below the code
 
-**Note:** When using the `/Create Runit Snippet` command, ensure the generated macro remains attached to the current block. Use Shift+Enter for line breaks within the same block before running the Slash Command, rather than creating a new separate block.
+**Note:** When using the `/Create Runit Snippet` command, ensure the generated macro remains attached to the current block. Use Shift+Enter for line breaks within the same block before running the slash command, rather than creating a new separate block.
 
 ### Importing External JavaScript Modules
 
@@ -69,7 +69,7 @@ chart.render('PieChart', data, options)
 
 The Google Charts integration supports various chart types including PieChart, BarChart, LineChart, ScatterChart, Gauge, GeoChart, and Table. Charts are rendered as interactive SVG elements directly in your notes.
 
-For more chart types and configuration options, see the [Google Charts Gallery](https://developers.google.com/chart/interactive/docs/gallery/linechart).
+For more chart types and configuration options, see the [Google Charts Gallery](https://developers.google.com/chart/interactive/docs/gallery).
 
 ### Python Support
 
@@ -88,7 +88,7 @@ print("Array:", arr)
 print("Sum:", np.sum(arr))
 print("Mean:", np.mean(arr))
 
-# Return result
+# Return the result
 arr * 2
 ```
 
@@ -145,21 +145,20 @@ This plugin supports running Clojure code snippets via sci (Small Clojure Interp
 (factorial 5)
 ```
 
-sci provides a safe, sandboxed environment for executing Clojure code with most of the core ClojureScript functionality available.
+SCI provides a safe, sandboxed environment for executing Clojure code with most of the core ClojureScript functionality available.
 
 ## Development
 
-- Clone the repo and run `pnpm install`.
-- Use `pnpm dev` to start development with hot reload.
-- Build for production with `pnpm build`.
+- Clone the repo and run `pnpm install`
+- Use `pnpm dev` to start development with hot reload
+- Build for production with `pnpm build`
 
 ## Acknowledgments
 
 Special thanks to [Klipse](https://github.com/viebel/klipse) for inspiration.  
 Originally, I wanted to integrate Klipse directly, but due to some technical limitations, I implemented a simplified "code runner" based on some of Klipse's ideas.  
 
-**Note:**  
-Currently, code execution happens when the code editor loses focus, which is less interactive compared to Klipse.  
+**Note:** Currently, code execution happens when the code editor loses focus, which is less interactive compared to Klipse.
 
 ## License
 
