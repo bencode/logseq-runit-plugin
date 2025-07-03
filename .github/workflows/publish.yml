@@ -3,7 +3,7 @@ name: Build Logseq Plugin
 on:
   push:
     branches:
-      - "main"
+      - "release"
     paths-ignore:
       - 'README.md'
   workflow_dispatch:

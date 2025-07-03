@@ -134,7 +134,7 @@ The plugin supports running Scheme code snippets via BiwaScheme, allowing you to
 
 ### Clojure Support
 
-The plugin supports running Clojure code snippets via sci (Small Clojure Interpreter), allowing you to execute ClojureScript code directly in your notes:
+This plugin supports running Clojure code snippets via sci (Small Clojure Interpreter), allowing you to execute ClojureScript code directly in your notes:
 
 ```clojure
 (defn factorial [n]
