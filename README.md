@@ -14,12 +14,21 @@ Built for [Logseq](https://logseq.com/).
 - **Dynamic imports**: Supports dynamic module imports for JavaScript
 - **Easy insertion**: Use the `/Create Runit Snippet` slash command to insert runnable code blocks
 
+## Installation
+
+Install the plugin directly from the Logseq Marketplace:
+
+1. Open Logseq
+2. Go to Settings → Plugins
+3. Click "Marketplace" 
+4. Search for "runit"
+5. Click "Install" on the logseq-runit-plugin
+
 ## Usage
 
-1. Install the plugin in Logseq
-2. Use the `/Create Runit Snippet` command to insert a code block
-3. Write your code in JavaScript, Python, Scheme, or Clojure inside the block
-4. The output and console logs will be displayed below the code
+1. Use the `/Create Runit Snippet` command to insert a code block
+2. Write your code in JavaScript, Python, Scheme, or Clojure inside the block
+3. The output and console logs will be displayed below the code
 
 **Note:** When using the `/Create Runit Snippet` command, ensure the generated macro remains attached to the current block. Use Shift+Enter for line breaks within the same block before running the slash command, rather than creating a new separate block.
 
